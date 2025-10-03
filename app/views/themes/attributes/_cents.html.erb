@@ -1,0 +1,20 @@
+<% # Ejected from bullet_train-themes-1.19.2/app/views/themes/base/attributes/_number.html.erb %>
+
+<% object ||= current_attributes_object %>
+<% strategy ||= current_attributes_strategy || :none %>
+<% url ||= nil %>
+<% format ||= "R$ %.2f" %>
+<% format_helper ||= nil %>
+<% format_helper_args ||= {} %>
+<% options ||= {} %>
+<% value = ((object.public_send(attribute) || 0)/ 100.0).round(2) %>
+<% if object.public_send(attribute).present? %>
+  <%= render 'shared/attributes/attribute', object: object, attribute: attribute, strategy: strategy do %>
+    <%# Usar number_to_currency para garantir separador ',' e delimitador '.' %>
+    <% if format_helper %>
+      <%= ActiveSupport::NumberHelper.send(format_helper, object.public_send(attribute), **format_helper_args) %>
+    <% else %>
+      <%= number_to_currency(value, unit: 'R$ ', separator: ',', delimiter: '.', precision: 2) %>
+    <% end %>
+  <% end %>
+<% end %>

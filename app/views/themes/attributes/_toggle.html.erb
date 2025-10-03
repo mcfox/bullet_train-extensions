@@ -1,0 +1,35 @@
+<%# Read-only Tailwind simple toggle for boolean attributes (for show pages) %>
+<%# Usage: render 'shared/attributes/toggle', object: @record, attribute: :active, label: 'Ativo', hide_label: true %>
+<%
+  object ||= current_attributes_object
+  display_when_blank = local_assigns[:display_when_blank] || false
+  label_text = local_assigns[:label] || local_assigns[:inline_label]
+  hide_label = local_assigns.key?(:hide_label) ? local_assigns[:hide_label] : false
+  aria_label ||= nil
+%>
+
+<% raise ArgumentError, 'Expected local `attribute`.' unless defined?(attribute) && attribute.present? %>
+
+<% value = object[attribute] unless object.nil? %>
+
+<% if !value.nil? || display_when_blank %>
+  <label class="flex items-center gap-3 select-none" aria-label="<%= (aria_label || label_text || object.class.human_attribute_name(attribute)) %>">
+    <span class="relative inline-flex h-6 w-11 shrink-0 items-center" role="switch" aria-checked="<%= value ? 'true' : 'false' %>" tabindex="-1">
+      <span class="pointer-events-none absolute inset-0 rounded-full transition-colors duration-200 ease-in-out <%= value ? 'bg-primary-700' : 'bg-gray-200 dark:bg-white/5' %>"></span>
+      <span class="pointer-events-none absolute left-0.5 top-0.5 size-5 rounded-full bg-white shadow-xs ring-1 ring-gray-900/5 transition-transform duration-200 ease-in-out <%= value ? 'translate-x-5' : '' %>"></span>
+    </span>
+
+    <%# Label on the right (optional) %>
+    <% unless hide_label %>
+      <% if label_text.present? %>
+        <span class="text-sm leading-6 text-slate-900 dark:text-slate-100">
+          <%= label_text.respond_to?(:html_safe) ? label_text.html_safe : label_text %>
+        </span>
+      <% else %>
+        <span class="text-sm leading-6 text-slate-900 dark:text-slate-100">
+          <%= object.class.human_attribute_name(attribute) %>
+        </span>
+      <% end %>
+    <% end %>
+  </label>
+<% end %>

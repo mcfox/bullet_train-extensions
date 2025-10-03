@@ -1,0 +1,19 @@
+<%
+    form ||= current_fields_form
+    options ||= {}
+    other_options ||= {}
+
+    # Configuração para o campo de exibição
+    display_options = options.dup
+    display_options[:placeholder] ||= 'R$ 0,00'
+    display_options[:inputmode] = 'numeric'
+    # display_options[:pattern] = '[0-9]*'
+    display_options[:data] ||= {}
+    display_options[:data]['cents-formatter-target'] = 'displayField'
+    display_options[:novalidate] = true
+%>
+
+<div data-controller="cents-formatter">
+  <%= form.hidden_field method, data: { 'cents-formatter-target': 'hiddenField' } %>
+  <%= render 'shared/fields/field', form: form, method: "#{method}_display", helper: :text_field, options: display_options, other_options: other_options %>
+</div>

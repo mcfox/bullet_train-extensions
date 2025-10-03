@@ -1,0 +1,43 @@
+<%# Tailwind simple toggle boolean field with label on the right (peer-based, no JS required) %>
+<%
+  form ||= current_fields_form
+  append_class ||= ''
+  disabled ||= false
+  aria_label ||= nil
+  label_text = local_assigns[:label] || local_assigns[:inline_label]
+%>
+
+<%# Ensure we have the form builder and method %>
+<% raise ArgumentError, 'Expected local `form` or `current_fields_form`.' unless form %>
+<% raise ArgumentError, 'Expected local `method`.' unless defined?(method) && method.present? %>
+
+<label class="flex items-center gap-3 select-none cursor-pointer">
+  <%# Hidden field to submit false when unchecked. %>
+  <%= form.hidden_field method, value: 0, disabled: disabled %>
+
+  <span class="relative inline-flex h-6 w-11 shrink-0 items-center">
+    <%= form.check_box method,
+          {
+            class: 'peer sr-only',
+            'aria-label': (aria_label || label_text || form.object.class.human_attribute_name(method)),
+            disabled: disabled,
+            include_hidden: false
+          },
+          1,
+          0 %>
+
+    <span class="pointer-events-none absolute inset-0 rounded-full bg-gray-200 transition-colors duration-200 ease-in-out peer-checked:bg-primary-700 dark:bg-white/5 dark:peer-checked:bg-primary-700 <%= append_class %>"></span>
+
+    <span class="pointer-events-none absolute left-0.5 top-0.5 size-5 rounded-full bg-white shadow-xs ring-1 ring-gray-900/5 transition-transform duration-200 ease-in-out peer-checked:translate-x-5"></span>
+  </span>
+
+  <% if label_text.present? %>
+    <span class="text-sm leading-6 text-slate-900 dark:text-slate-100">
+      <%= label_text.respond_to?(:html_safe) ? label_text.html_safe : label_text %>
+    </span>
+  <% else %>
+    <span class="text-sm leading-6 text-slate-900 dark:text-slate-100">
+      <%= form.object.class.human_attribute_name(method) %>
+    </span>
+  <% end %>
+</label>
