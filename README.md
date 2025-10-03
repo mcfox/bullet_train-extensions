@@ -57,3 +57,12 @@ gem "bullet_train-extensions", github: "mcfox/bullet_train-extensions"
 - O engine não isola namespace para facilitar a resolução de partials.
 - O helper é incluído automaticamente no ActionView.
 - Se você tiver mais partials (ex.: json_field, workflow_state_field, etc.), adicione-os em `app/views/themes/...` dentro do engine.
+
+## Devo subir o arquivo .gem para o GitHub?
+Não. O arquivo .gem é um artefato gerado e não deve ser commitado no repositório.
+
+O fluxo recomendado é:
+- Gere o .gem localmente apenas para testar/validar a gemspec (como no CI).
+- Publique no RubyGems com `gem push` (veja a seção acima).
+- Adicione `*.gem` ao `.gitignore` (já configurado neste repo) para evitar commits acidentais.
+- Se quiser disponibilizar binários/artefatos, use GitHub Releases, mas ainda assim não versione o `.gem` no git.
